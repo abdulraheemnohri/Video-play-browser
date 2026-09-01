@@ -1,17 +1,14 @@
 package com.videoplay.browser.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -21,6 +18,7 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -51,7 +49,7 @@ import org.mozilla.geckoview.GeckoView
 
 /**
  * Browser Screen for VIDEOPlay Browser.
- * Displays the GeckoView and provides navigation controls.
+ * Displays the GeckoView and provides navigation controls with modern UI.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,6 +62,7 @@ fun BrowserScreen(
     var url by remember { mutableStateOf("about:blank") }
     var isLoading by remember { mutableStateOf(false) }
     var progress by remember { mutableStateOf(0) }
+    var showAddressBar by remember { mutableStateOf(true) }
 
     // Update URL when tab changes
     LaunchedEffect(currentTab) {
@@ -75,98 +74,90 @@ fun BrowserScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { 
-                    Column {
-                        Text("VIDEOPlay Browser")
-                        if (isLoading) {
-                            LinearProgressIndicator(
-                                progress = { progress / 100f },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(2.dp)
+            if (showAddressBar) {
+                TopAppBar(
+                    title = {
+                        OutlinedTextField(
+                            value = url,
+                            onValueChange = { url = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            label = { Text("Search or enter URL") },
+                            leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+                            singleLine = true,
+                            keyboardOptions = androidx.compose.ui.text.input.KeyboardOptions(
+                                keyboardType = androidx.compose.ui.text.input.KeyboardType.Uri
+                            ),
+                            keyboardActions = androidx.compose.ui.text.input.KeyboardActions(
+                                onSearch = {
+                                    viewModel.loadUrl(url)
+                                }
                             )
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        }
+                    },
+                    actions = {
+                        IconButton(
+                            onClick = { viewModel.goBack() },
+                            enabled = navigationController?.canGoBack == true
+                        ) {
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        }
+                        IconButton(
+                            onClick = { viewModel.goForward() },
+                            enabled = navigationController?.canGoForward == true
+                        ) {
+                            Icon(Icons.Default.ArrowForward, contentDescription = "Forward")
+                        }
+                        IconButton(onClick = { viewModel.reload() }) {
+                            Icon(Icons.Default.Refresh, contentDescription = "Reload")
+                        }
+                        IconButton(onClick = { /* TODO: Share */ }) {
+                            Icon(Icons.Default.Share, contentDescription = "Share")
+                        }
+                        IconButton(onClick = { /* TODO: Bookmark */ }) {
+                            Icon(Icons.Default.Star, contentDescription = "Bookmark")
                         }
                     }
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                actions = {
-                    IconButton(
-                        onClick = { viewModel.goBack() },
-                        enabled = navigationController?.canGoBack == true
-                    ) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                    IconButton(
-                        onClick = { viewModel.goForward() },
-                        enabled = navigationController?.canGoForward == true
-                    ) {
-                        Icon(Icons.Default.ArrowForward, contentDescription = "Forward")
-                    }
-                    IconButton(onClick = { viewModel.reload() }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Reload")
-                    }
-                    IconButton(onClick = { /* TODO: Share */ }) {
-                        Icon(Icons.Default.Share, contentDescription = "Share")
-                    }
-                    IconButton(onClick = { /* TODO: Add to Bookmarks */ }) {
-                        Icon(Icons.Default.Star, contentDescription = "Bookmark")
-                    }
-                }
-            )
+                )
+            }
         }
     ) { paddingValues ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Address Bar
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(Icons.Default.Search, contentDescription = "Search")
-                Spacer(modifier = Modifier.width(8.dp))
-                OutlinedTextField(
-                    value = url,
-                    onValueChange = { url = it },
-                    modifier = Modifier.weight(1f),
-                    label = { Text("URL") },
-                    singleLine = true,
-                    keyboardOptions = androidx.compose.ui.text.input.KeyboardOptions(
-                        keyboardType = androidx.compose.ui.text.input.KeyboardType.Uri
-                    ),
-                    keyboardActions = androidx.compose.ui.text.input.KeyboardActions(
-                        onSearch = {
-                            viewModel.loadUrl(url)
-                        }
-                    )
+            // GeckoView
+            currentTab?.let { tab ->
+                GeckoWebView(
+                    session = tab.session,
+                    onProgressChange = { newProgress ->
+                        progress = newProgress
+                        isLoading = newProgress < 100
+                    },
+                    modifier = Modifier.fillMaxSize()
                 )
             }
 
-            // GeckoView
-            currentTab?.let { tab ->
-                Box(
+            // Progress Bar
+            if (isLoading) {
+                LinearProgressIndicator(
+                    progress = { progress / 100f },
                     modifier = Modifier
-                        .weight(1f)
                         .fillMaxWidth()
-                ) {
-                    GeckoWebView(
-                        session = tab.session,
-                        onProgressChange = { newProgress ->
-                            progress = newProgress
-                            isLoading = newProgress < 100
-                        },
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
+                        .height(4.dp)
+                )
+            }
+
+            // Loading Indicator
+            if (isLoading && progress == 0) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
             }
         }
     }
