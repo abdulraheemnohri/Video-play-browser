@@ -37,8 +37,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -50,6 +48,7 @@ import org.mozilla.geckoview.GeckoView
 /**
  * Browser Screen for VIDEOPlay Browser.
  * Displays the GeckoView and provides navigation controls with modern UI.
+ * Fixes progress bar accuracy and ensures proper session management.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,6 +68,7 @@ fun BrowserScreen(
         currentTab?.let { tab ->
             url = tab.url
             isLoading = false
+            progress = 0
         }
     }
 
@@ -139,12 +139,21 @@ fun BrowserScreen(
                         progress = newProgress
                         isLoading = newProgress < 100
                     },
+                    onPageStart = { newUrl ->
+                        url = newUrl
+                        isLoading = true
+                        progress = 0
+                    },
+                    onPageStop = { success ->
+                        isLoading = false
+                        progress = if (success) 100 else 0
+                    },
                     modifier = Modifier.fillMaxSize()
                 )
             }
 
-            // Progress Bar
-            if (isLoading) {
+            // Progress Bar (Only show if loading and progress < 100)
+            if (isLoading && progress < 100) {
                 LinearProgressIndicator(
                     progress = { progress / 100f },
                     modifier = Modifier
@@ -153,7 +162,7 @@ fun BrowserScreen(
                 )
             }
 
-            // Loading Indicator
+            // Loading Indicator (Only show if loading and progress is 0)
             if (isLoading && progress == 0) {
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center)
@@ -165,11 +174,14 @@ fun BrowserScreen(
 
 /**
  * Composable for embedding GeckoView in Jetpack Compose.
+ * Ensures proper progress tracking and error handling.
  */
 @Composable
 fun GeckoWebView(
     session: GeckoSession,
     onProgressChange: (Int) -> Unit,
+    onPageStart: (String) -> Unit,
+    onPageStop: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val geckoView = remember { GeckoView(LocalContext.current) }
@@ -182,11 +194,13 @@ fun GeckoWebView(
     LaunchedEffect(session) {
         session.progressDelegate = object : GeckoSession.ProgressDelegate {
             override fun onPageStart(session: GeckoSession, url: String) {
+                onPageStart(url)
                 onProgressChange(0)
             }
 
             override fun onPageStop(session: GeckoSession, success: Boolean) {
-                onProgressChange(100)
+                onPageStop(success)
+                onProgressChange(if (success) 100 else 0)
             }
 
             override fun onProgressChange(session: GeckoSession, progress: Int) {
