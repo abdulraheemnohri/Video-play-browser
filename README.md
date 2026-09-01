@@ -1,35 +1,87 @@
-# VIDEOPlay Browser
+# VIDEOPlay Browser 🌐🎥
 
-**VIDEOPlay Browser** is a **Firefox/GeckoView-based** Android browser with a **Video-First** and **Privacy-First** approach. It combines the power of **GeckoView** with modern Android features to deliver a **fast, secure, and video-optimized** browsing experience.
+**A Firefox/GeckoView-based Android browser with Video-First and Privacy-First features.**
 
 ---
 
-## 📌 **Project Overview**
+## 📌 **About VIDEOPlay Browser**
 
-VIDEOPlay Browser is designed to:
-- Provide a **full-featured web browser** experience.
-- Optimize **video playback** with advanced controls.
-- Ensure **privacy and security** for users.
-- Support **modern Android features** like Picture-in-Picture (PiP), Fullscreen, and MediaSession.
-- Offer **extensive customization** for video settings.
+VIDEOPlay Browser is a **modern, privacy-focused, and video-optimized** Android browser built on **Mozilla's GeckoView** engine. It combines the power of Firefox with the latest Android features to deliver a **fast, secure, and immersive** browsing experience.
+
+---
+
+## ✨ **Features**
+
+### **🌐 Browser Features**
+- ✅ **GeckoView Integration** – Firefox Engine for fast and secure browsing
+- ✅ **Tab Management** – Unlimited tabs, private tabs, tab groups
+- ✅ **Modern Navigation** – Back, Forward, Reload, Stop
+- ✅ **Smart Address Bar** – URL + Search with suggestions
+- ✅ **Home Screen** – Quick Access, Recently Visited, Continue Watching
+- ✅ **History** – Search, Delete, Clear
+- ✅ **Bookmarks** – Folders, Tags, Import/Export
+- ✅ **Downloads** – Queue, Pause, Resume, Cancel
+- ✅ **Site Permissions** – Camera, Microphone, Location, etc.
+- ✅ **Privacy Controls** – Tracking Protection, HTTPS-Only
+
+### **🎥 Video Features**
+- ✅ **Video Detection** – Auto-detect HTML5 video/audio
+- ✅ **Video Player** – Play, Pause, Seek, Volume, Speed Controls
+- ✅ **Fullscreen Mode** – Immersive video experience
+- ✅ **Picture-in-Picture (PiP)** – Android PiP API support
+- ✅ **Mini Player** – Continue watching while browsing
+- ✅ **MediaSession** – Lock Screen Controls, Bluetooth Support
+- ✅ **Audio Focus** – Pause on Calls, Duck on Navigation
+- ✅ **Video History** – Continue Watching, Resume Playback
+- ✅ **Video Settings** – Playback, Controls, Quality, Subtitles, etc.
+
+### **📱 Android Features**
+- ✅ **Edge-to-Edge UI** – Status Bar & Navigation Bar Insets
+- ✅ **Predictive Back** – Modern back gesture animation
+- ✅ **Dynamic Colors** – Material 3 Theming
+- ✅ **Adaptive Layouts** – Phones, Tablets, Foldables
+- ✅ **Dark Mode** – Automatic & Manual
+- ✅ **Biometric Lock** – Fingerprint/Face ID App Lock
+- ✅ **App Shortcuts** – New Tab, Private Tab, Search
+- ✅ **Widgets** – Search Widget, Quick Actions
+- ✅ **Sharing** – Open URL, Share Page, Share Downloads
+- ✅ **Default Browser** – Set as Default Browser
+
+### **🔒 Privacy & Security**
+- ✅ **Tracking Protection** – Block trackers across websites
+- ✅ **HTTPS-Only Mode** – Force secure connections
+- ✅ **Private Browsing** – No history, no cookies
+- ✅ **Clear Data on Exit** – Auto-clear browsing data
+- ✅ **Biometric Authentication** – Secure app access
+
+---
+
+## 📱 **Screenshots**
+
+| **Home Screen** | **Browser Screen** | **Video Player** |
+|----------------|------------------|----------------|
+| ![Home](https://via.placeholder.com/300x600/6200EE/FFFFFF?text=Home+Screen) | ![Browser](https://via.placeholder.com/300x600/6200EE/FFFFFF?text=Browser+Screen) | ![Video](https://via.placeholder.com/300x600/6200EE/FFFFFF?text=Video+Player) |
+
+| **Tabs Screen** | **Settings Screen** | **History Screen** |
+|----------------|------------------|----------------|
+| ![Tabs](https://via.placeholder.com/300x600/6200EE/FFFFFF?text=Tabs+Screen) | ![Settings](https://via.placeholder.com/300x600/6200EE/FFFFFF?text=Settings+Screen) | ![History](https://via.placeholder.com/300x600/6200EE/FFFFFF?text=History+Screen) |
+
+*(Screenshots will be updated with real app screens soon!)*
 
 ---
 
 ## 🛠 **Tech Stack**
 
-- **Browser Engine**: [GeckoView](https://mozilla.github.io/geckoview/) (Mozilla Firefox Engine)
-- **Language**: Kotlin
-- **UI Framework**: Jetpack Compose
-- **Architecture**: Clean Architecture (MVVM + UseCases + Repositories)
-- **Database**: Room (for History, Bookmarks, Downloads, etc.)
-- **Preferences**: DataStore (for Settings)
-- **Dependencies**:
-  - `org.mozilla.geckoview:geckoview` (Latest Stable)
-  - `androidx.compose.ui:ui` (Jetpack Compose)
-  - `androidx.lifecycle:lifecycle-viewmodel-compose` (ViewModel)
-  - `androidx.navigation:navigation-compose` (Navigation)
-  - `androidx.room:room-runtime` (Database)
-  - `androidx.datastore:datastore-preferences` (Preferences)
+| **Category** | **Technology** |
+|-------------|--------------|
+| **Browser Engine** | [GeckoView](https://mozilla.github.io/geckoview/) (Mozilla Firefox) |
+| **Language** | Kotlin |
+| **UI Framework** | Jetpack Compose |
+| **Architecture** | Clean Architecture (MVVM + UseCases + Repositories) |
+| **Database** | Room (SQLite) |
+| **Preferences** | DataStore |
+| **Navigation** | Android Navigation Component |
+| **Dependencies** | AndroidX, Material 3, Coil, etc. |
 
 ---
 
@@ -38,58 +90,95 @@ VIDEOPlay Browser is designed to:
 ```
 VideoPlayBrowser/
 │
-├── app/                          # Main Android App Module
+├── .github/
+│   └── workflows/
+│       ├── debug_apk.yml
+│       └── release_apk.yml
+│
+├── app/
 │   ├── src/main/
 │   │   ├── AndroidManifest.xml
 │   │   ├── java/com/videoplay/browser/
-│   │   │   ├── ui/               # Compose UI Screens
-│   │   │   ├── viewmodel/       # ViewModels
-│   │   │   ├── model/           # Data Models
-│   │   │   ├── navigation/      # Navigation Logic
-│   │   │   └── ...
-│   │   └── res/                 # Resources (Strings, Drawables, etc.)
+│   │   │   ├── ui/
+│   │   │   │   ├── screens/
+│   │   │   │   │   ├── HomeScreen.kt
+│   │   │   │   │   ├── BrowserScreen.kt
+│   │   │   │   │   ├── TabsScreen.kt
+│   │   │   │   │   ├── HistoryScreen.kt
+│   │   │   │   │   ├── BookmarksScreen.kt
+│   │   │   │   │   ├── DownloadsScreen.kt
+│   │   │   │   │   └── SettingsScreen.kt
+│   │   │   │   └── theme/
+│   │   │   │       ├── Theme.kt
+│   │   │   │       ├── Color.kt
+│   │   │   │       └── Type.kt
+│   │   │   ├── viewmodel/
+│   │   │   │   ├── BrowserViewModel.kt
+│   │   │   │   └── VideoPlayerViewModel.kt
+│   │   │   ├── gecko/
+│   │   │   │   ├── runtime/
+│   │   │   │   │   └── GeckoRuntimeManager.kt
+│   │   │   │   └── session/
+│   │   │   │       └── GeckoSessionManager.kt
+│   │   │   ├── tabs/
+│   │   │   │   ├── Tab.kt
+│   │   │   │   └── TabManager.kt
+│   │   │   ├── video/
+│   │   │   │   ├── detector/
+│   │   │   │   │   └── VideoDetector.kt
+│   │   │   │   ├── playback/
+│   │   │   │   │   ├── VideoPlayerScreen.kt
+│   │   │   │   │   └── VideoPlayerViewModel.kt
+│   │   │   │   ├── fullscreen/
+│   │   │   │   │   └── FullscreenVideoActivity.kt
+│   │   │   │   ├── pip/
+│   │   │   │   │   └── VideoPipManager.kt
+│   │   │   │   └── settings/
+│   │   │   │       ├── VideoSettings.kt
+│   │   │   │       └── VideoSettingsViewModel.kt
+│   │   │   ├── database/
+│   │   │   │   ├── AppDatabase.kt
+│   │   │   │   ├── entities/
+│   │   │   │   │   ├── HistoryEntity.kt
+│   │   │   │   │   ├── BookmarkEntity.kt
+│   │   │   │   │   ├── VideoHistoryEntity.kt
+│   │   │   │   │   └── DownloadEntity.kt
+│   │   │   │   └── dao/
+│   │   │   │       ├── HistoryDao.kt
+│   │   │   │       ├── BookmarkDao.kt
+│   │   │   │       ├── VideoHistoryDao.kt
+│   │   │   │       └── DownloadDao.kt
+│   │   │   ├── core/
+│   │   │   │   └── preferences/
+│   │   │   │       └── SettingsRepository.kt
+│   │   │   ├── privacy/
+│   │   │   │   └── PrivacySettings.kt
+│   │   │   ├── security/
+│   │   │   │   └── BiometricLock.kt
+│   │   │   ├── downloads/
+│   │   │   │   ├── DownloadManager.kt
+│   │   │   │   └── DownloadService.kt
+│   │   │   └── BrowserApplication.kt
+│   │   └── res/
+│   │       ├── values/
+│   │       │   ├── strings.xml
+│   │       │   ├── colors.xml
+│   │       │   ├── themes.xml
+│   │       │   └── styles.xml
+│   │       ├── values-ur/
+│   │       │   └── strings.xml (Urdu Localization)
+│   │       └── drawable/
+│   │           ├── ic_launcher_background.xml
+│   │           ├── ic_launcher_foreground.xml
+│   │           └── app_logo.svg
+│   └── build.gradle.kts
 │
-├── core/                         # Core Modules
-│   ├── common/                  # Shared Utilities
-│   ├── model/                   # Shared Data Models
-│   ├── database/                # Room Database
-│   ├── preferences/             # DataStore Preferences
-│   ├── security/                # Security Utilities
-│   └── ui/                      # Shared UI Components
-│
-├── browser/                      # Browser Module
-│   ├── api/                     # Browser APIs
-│   ├── engine/                  # Browser Engine (GeckoView)
-│   ├── navigation/              # Navigation Logic
-│   ├── permissions/             # Site Permissions
-│   └── session/                 # Browser Sessions
-│
-├── gecko/                        # GeckoView Module
-│   ├── runtime/                 # GeckoRuntime Management
-│   ├── session/                 # GeckoSession Management
-│   └── extensions/              # GeckoView Extensions
-│
-├── video/                        # Video Module
-│   ├── detector/                # Video Detection Logic
-│   ├── playback/                # Video Playback Logic
-│   ├── controls/                # Video Controls
-│   ├── fullscreen/              # Fullscreen Management
-│   ├── pip/                     # Picture-in-Picture (PiP)
-│   ├── media/                   # MediaSession Integration
-│   ├── history/                 # Video History
-│   └── settings/                # Video Settings
-│
-├── tabs/                         # Tab Management
-├── history/                      # Browsing History
-├── bookmarks/                    # Bookmarks Management
-├── downloads/                    # Downloads Management
-├── privacy/                      # Privacy Features
-├── settings/                     # App Settings
-├── search/                       # Search Engine
-├── sharing/                      # Sharing Features
-├── widgets/                      # Android Widgets
-├── shortcuts/                    # App Shortcuts
-└── testing/                      # Tests (Unit, UI, Integration)
+├── .gitignore
+├── README.md
+├── LICENSE
+├── settings.gradle.kts
+├── build.gradle.kts
+└── proguard-rules.pro
 ```
 
 ---
@@ -103,69 +192,42 @@ VideoPlayBrowser/
 - Git
 
 ### **Setup**
-1. Clone the repository:
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/abdulraheemnohri/Video-play-browser.git
    cd Video-play-browser
    ```
 
-2. Open the project in **Android Studio**.
+2. **Open in Android Studio:**
+   - Open Android Studio → **File → Open** → Select the `Video-play-browser` folder.
 
-3. Sync Gradle and build the project.
+3. **Sync Gradle:**
+   - Click **Sync Now** in Android Studio to download dependencies.
 
-4. Run on an **Android device** or **emulator**.
-
----
-
-## 📱 **Features**
-
-### **Browser Features**
-- ✅ **GeckoView Integration** (Firefox Engine)
-- ✅ **Tab Management** (Unlimited Tabs, Private Tabs)
-- ✅ **Navigation** (Back, Forward, Reload, Stop)
-- ✅ **Address Bar** (URL + Search)
-- ✅ **Home Screen** (Quick Access, Recently Visited)
-- ✅ **History** (Search, Delete, Clear)
-- ✅ **Bookmarks** (Folders, Tags, Import/Export)
-- ✅ **Downloads** (Queue, Pause, Resume, Cancel)
-- ✅ **Site Permissions** (Camera, Microphone, Location, etc.)
-- ✅ **Privacy Controls** (Tracking Protection, HTTPS-Only)
-
-### **Video Features**
-- ✅ **Video Detection** (HTML5 Video/Audio)
-- ✅ **Video Player** (Play, Pause, Seek, Volume, Speed)
-- ✅ **Fullscreen Mode** (Immersive Experience)
-- ✅ **Picture-in-Picture (PiP)** (Android PiP API)
-- ✅ **Mini Player** (Continue Watching While Browsing)
-- ✅ **MediaSession** (Lock Screen Controls, Bluetooth)
-- ✅ **Audio Focus** (Pause on Calls, Duck on Navigation)
-- ✅ **Video History** (Continue Watching, Resume Playback)
-- ✅ **Video Settings** (Playback, Controls, Quality, Subtitles, etc.)
-
-### **Android Features**
-- ✅ **Edge-to-Edge UI** (Status Bar, Navigation Bar)
-- ✅ **Adaptive Layouts** (Phone, Tablet, Foldable)
-- ✅ **Dark Mode & Dynamic Colors** (Material 3)
-- ✅ **App Shortcuts** (New Tab, Private Tab, Search)
-- ✅ **Widgets** (Search Widget, Quick Actions)
-- ✅ **Sharing** (Open URL, Share Page, Share Downloads)
-- ✅ **App Links** (Default Browser Support)
-- ✅ **Biometric Lock** (App Lock with Fingerprint/Face ID)
+4. **Build & Run:**
+   - Connect an **Android device** or start an **emulator**.
+   - Click **Run (▶)** to build and install the app.
 
 ---
 
-## 🔧 **Configuration**
+## 📦 **Build Variants**
 
-### **GeckoView Setup**
-The project uses **GeckoView** as the browser engine. Ensure you have the latest version in `app/build.gradle.kts`:
-```kotlin
-implementation("org.mozilla.geckoview:geckoview:120.0.20240311145107")
-```
+| **Variant** | **Description** | **Usage** |
+|------------|----------------|----------|
+| **Debug** | For development & testing | `./gradlew assembleDebug` |
+| **Release** | For production | `./gradlew assembleRelease` |
 
-### **Gradle Plugins**
-- **Android Gradle Plugin**: Latest Stable
-- **Kotlin Gradle Plugin**: Latest Stable
-- **Jetpack Compose**: Latest Stable
+---
+
+## 🤝 **Contributing**
+
+Contributions are welcome! Please follow these steps:
+
+1. **Fork** the repository.
+2. Create a **new branch** (`git checkout -b feature/your-feature`).
+3. Commit your changes (`git commit -m 'feat: Add new feature'`).
+4. Push to the branch (`git push origin feature/your-feature`).
+5. Open a **Pull Request**.
 
 ---
 
@@ -175,14 +237,20 @@ This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for d
 
 ---
 
-## 🤝 **Contributing**
-
-Contributions are welcome! Please open an **Issue** or **Pull Request** for any improvements.
-
----
-
 ## 📬 **Contact**
 
 For questions or feedback, contact:
 - **GitHub**: [@abdulraheemnohri](https://github.com/abdulraheemnohri)
 - **Email**: abdulraheemnohri@gmail.com
+
+---
+
+## 🌟 **Acknowledgments**
+
+- **Mozilla** – For [GeckoView](https://mozilla.github.io/geckoview/)
+- **Android Team** – For Jetpack Compose & Material 3
+- **Open Source Community** – For inspiration and support
+
+---
+
+**Made with ❤️ in Pakistan** 🇵🇰
