@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Name -->
+    <string name="app_name">VIDEOPlay Browser</string>
+
+    <!-- General -->
+    <string name="search_or_enter_url">Search or enter URL</string>
+    <string name="new_tab">New Tab</string>
+    <string name="close_tab">Close Tab</string>
+    <string name="close_all_tabs">Close All Tabs</string>
+    <string name="tabs">Tabs</string>
+    <string name="settings">Settings</string>
+    <string name="home">Home</string>
+    <string name="browser">Browser</string>
+    <string name="video">Video</string>
+    <string name="history">History</string>
+    <string name="bookmarks">Bookmarks</string>
+    <string name="downloads">Downloads</string>
+    <string name="privacy">Privacy</string>
+    <string name="security">Security</string>
+
+    <!-- Browser -->
+    <string name="back">Back</string>
+    <string name="forward">Forward</string>
+    <string name="reload">Reload</string>
+    <string name="stop">Stop</string>
+    <string name="open_new_tab">Open New Tab</string>
+    <string name="view_tabs">View Tabs</string>
+
+    <!-- Video -->
+    <string name="video_player">Video Player</string>
+    <string name="fullscreen">Fullscreen</string>
+    <string name="picture_in_picture">Picture-in-Picture</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="seek_forward">Seek Forward</string>
+    <string name="seek_backward">Seek Backward</string>
+    <string name="volume">Volume</string>
+    <string name="mute">Mute</string>
+    <string name="unmute">Unmute</string>
+    <string name="playback_speed">Playback Speed</string>
+
+    <!-- Settings -->
+    <string name="general_settings">General</string>
+    <string name="privacy_settings">Privacy</string>
+    <string name="video_settings">Video</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="tracking_protection">Tracking Protection</string>
+    <string name="autoplay_videos">Autoplay Videos</string>
+    <string name="about">About</string>
+
+    <!-- Messages -->
+    <string name="no_tabs_open">No tabs open.</string>
+    <string name="no_recent_visits">No recent visits yet.</string>
+    <string name="more_settings_coming_soon">More settings coming soon...</string>
+
+    <!-- Errors -->
+    <string name="error_loading_page">Error loading page</string>
+    <string name="error_no_internet">No internet connection</string>
+
+    <!-- Urdu Localization (for future use) -->
+    <!-- <string name="app_name_ur">ویڈیو پلے براؤزر</string> -->
+</resources>
