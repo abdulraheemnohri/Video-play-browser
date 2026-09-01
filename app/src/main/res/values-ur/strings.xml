@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Name -->
+    <string name="app_name">ویڈیو پلے براؤزر</string>
+
+    <!-- General -->
+    <string name="search_or_enter_url">تلاش کریں یا URL درج کریں</string>
+    <string name="new_tab">نیا ٹیب</string>
+    <string name="close_tab">ٹیب بند کریں</string>
+    <string name="close_all_tabs">تمام ٹیبز بند کریں</string>
+    <string name="tabs">ٹیبز</string>
+    <string name="settings">ترتیبات</string>
+    <string name="home">ہوم</string>
+    <string name="browser">براؤزر</string>
+    <string name="video">ویڈیو</string>
+    <string name="history">ہسٹری</string>
+    <string name="bookmarks">بک مارکس</string>
+    <string name="downloads">ڈاؤن لوڈز</string>
+    <string name="privacy">رازداری</string>
+    <string name="security">حفظی</string>
+
+    <!-- Browser -->
+    <string name="back">پیچھے</string>
+    <string name="forward">آگے</string>
+    <string name="reload">دوبارہ لوڈ کریں</string>
+    <string name="stop">روکیں</string>
+    <string name="open_new_tab">نیا ٹیب کھولیں</string>
+    <string name="view_tabs">ٹیبز دیکھیں</string>
+
+    <!-- Video -->
+    <string name="video_player">ویڈیو پلےئر</string>
+    <string name="fullscreen">پورا سکرین</string>
+    <string name="picture_in_picture">پکچر ان پکچر</string>
+    <string name="play">چلائیں</string>
+    <string name="pause">روکیں</string>
+    <string name="seek_forward">آگے چلائیں</string>
+    <string name="seek_backward">پیچھے چلائیں</string>
+    <string name="volume">آواز</string>
+    <string name="mute">خاموش کریں</string>
+    <string name="unmute">آواز چالو کریں</string>
+    <string name="playback_speed">پلے بیک سپیڈ</string>
+
+    <!-- Settings -->
+    <string name="general_settings">عام ترتیبات</string>
+    <string name="privacy_settings">رازداری کی ترتیبات</string>
+    <string name="video_settings">ویڈیو کی ترتیبات</string>
+    <string name="dark_mode">ڈارک موڈ</string>
+    <string name="tracking_protection">ٹریکنگ حفاظت</string>
+    <string name="autoplay_videos">خودکار ویڈیوز</string>
+    <string name="about">بارے میں</string>
+
+    <!-- Messages -->
+    <string name="no_tabs_open">کوئی ٹیب کھلا نہیں ہے۔</string>
+    <string name="no_recent_visits">ابھی تک کوئی وزٹ نہیں ہوا۔</string>
+    <string name="more_settings_coming_soon">جلد ہی مزید ترتیبات آ رہی ہیں...</string>
+
+    <!-- Errors -->
+    <string name="error_loading_page">صفحہ لوڈ ہونے میں خرابی</string>
+    <string name="error_no_internet">انٹرنیٹ کنکشن نہیں ہے</string>
+
+    <!-- Navigation -->
+    <string name="continue_watching">دیکھنا جاری رکھیں</string>
+    <string name="recently_watched">حالیہ دیکھی گئی ویڈیوز</string>
+    <string name="quick_access">فوری رسائی</string>
+    <string name="youTube">YouTube</string>
+    <string name="vimeo">Vimeo</string>
+    <string name="twitch">Twitch</string>
+
+    <!-- Video Settings -->
+    <string name="autoplay">خودکار پلے</string>
+    <string name="playback_speed">پلے بیک سپیڈ</string>
+    <string name="remember_playback_speed">پلے بیک سپیڈ یاد رکھیں</string>
+    <string name="remember_playback_position">پلے بیک پوزیشن یاد رکھیں</string>
+    <string name="enable_pip">پکچر ان پکچر چالو کریں</string>
+    <string name="enable_mini_player">مینی پلےئر چالو کریں</string>
+
+    <!-- Privacy Settings -->
+    <string name="tracking_protection_description">ٹریکروں کے خلاف حفاظت فراہم کرتا ہے جو آپ کی سرگرمیوں کو مختلف ویب سائٹس پر فالو کرتے ہیں۔</string>
+    <string name="https_only_description">حفظی براؤزنگ کے لیے تمام کنکشنز کو HTTPS پر مجبور کرتا ہے۔</string>
+    <string name="clear_data_on_exit">جب آپ ایپ بند کرتے ہیں تو براؤزنگ ڈیٹا (ہسٹری، کوکیز، کیش) صاف ہو جاتا ہے۔</string>
+
+    <!-- Downloads -->
+    <string name="download_complete">ڈاؤن لوڈ مکمل ہو گیا</string>
+    <string name="download_failed">ڈاؤن لوڈ ناکام ہو گیا</string>
+    <string name="download_paused">ڈاؤن لوڈ روک دیا گیا</string>
+    <string name="download_cancelled">ڈاؤن لوڈ منسوخ کر دیا گیا</string>
+
+    <!-- Biometric Lock -->
+    <string name="biometric_lock_title">VIDEOPlay کو انلاک کریں</string>
+    <string name="biometric_lock_subtitle">ایپ تک رسائی کے لیے تصدیق کریں</string>
+    <string name="biometric_lock_cancel">منسوخ کریں</string>
+
+    <!-- Search Engines -->
+    <string name="google">Google</string>
+    <string name="bing">Bing</string>
+    <string name="duckduckgo">DuckDuckGo</string>
+    <string name="brave">Brave</string>
+    <string name="ecosia">Ecosia</string>
+    <string name="custom">کسٹم</string>
+
+    <!-- Video Quality -->
+    <string name="quality_auto">خودکار</string>
+    <string name="quality_2160p">2160p</string>
+    <string name="quality_1440p">1440p</string>
+    <string name="quality_1080p">1080p</string>
+    <string name="quality_720p">720p</string>
+    <string name="quality_480p">480p</string>
+    <string name="quality_360p">360p</string>
+
+    <!-- Subtitles -->
+    <string name="subtitles">سب ٹائٹلز</string>
+    <string name="subtitles_off">سب ٹائٹلز بند کریں</string>
+    <string name="subtitles_size">سب ٹائٹلز سائز</string>
+    <string name="subtitles_style">سب ٹائٹلز اسٹائل</string>
+    <string name="subtitles_small">چوٹا</string>
+    <string name="subtitles_medium">درمیانہ</string>
+    <string name="subtitles_large">بڑا</string>
+    <string name="subtitles_extra_large">بہت بڑا</string>
+
+    <!-- Notifications -->
+    <string name="notification_download_complete">ڈاؤن لوڈ مکمل ہو گیا</string>
+    <string name="notification_video_playing">ویڈیو چل رہی ہے</string>
+</resources>
