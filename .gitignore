@@ -1,0 +1,96 @@
+# Android
+.gradle
+build/
+local.properties
+*.iml
+*.log
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# Keystore
+*.jks
+*.keystore
+
+# Gradle
+gradle.properties
+
+# Local history for Android Studio
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/gradle.xml
+.idea/assets.wip
+.idea/dictionaries
+.idea/libraries
+.idea/caches
+.idea/fileTemplates
+.idea/codeStyles
+.idea/inspectionProfiles
+.idea/options
+.idea/scopes
+.idea/vcs.xml
+.idea/copyright
+
+# Android Studio
+*.iml
+*.ipr
+*.iws
+
+# Build outputs
+build/
+dist/
+output/
+
+# APKs
+*.apk
+*.ap_
+*.aab
+
+# Emulator
+*.avd
+
+# Proguard
+proguard/
+
+# Signing
+signing/
+
+# Environment
+.env
+.env.local
+
+# Firebase
+firebase.json
+google-services.json
+
+# Crashlytics
+crashlytics.properties
+
+# Sentry
+sentry.properties
+
+# Fastlane
+fastlane/
+
+# Node (if used)
+node_modules/
+package-lock.json
+
+# Yarn (if used)
+yarn.lock
+
+# npm (if used)
+package-lock.json
+
+# Python (if used)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Mac (if used)
+.DS_Store
+
+# Windows (if used)
+Thumbs.db
