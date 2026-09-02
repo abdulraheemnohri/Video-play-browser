@@ -12,8 +12,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.CleanHands
 import androidx.compose.material.icons.filled.Https
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,20 +28,33 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.videoplay.browser.privacy.ClearBrowsingDataManager
+import com.videoplay.browser.privacy.HttpsOnlyManager
+import com.videoplay.browser.privacy.TrackingProtectionManager
 
 /**
  * Privacy Settings Screen for VIDEOPlay Browser.
- * Allows users to configure privacy-related options with modern UI.
+ * Allows users to configure privacy-related options.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PrivacySettingsScreen(
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onNavigateToClearData: () -> Unit,
+    onNavigateToSitePermissions: () -> Unit
 ) {
+    val context = LocalContext.current
+    
+    // State for tracking protection
     val trackingProtectionEnabled = remember { mutableStateOf(true) }
+    val trackingProtectionLevel = remember { 
+        mutableStateOf(TrackingProtectionManager.TrackingProtectionLevel.STANDARD) 
+    }
+    
+    // State for HTTPS-only mode
     val httpsOnlyEnabled = remember { mutableStateOf(true) }
-    val clearDataOnExitEnabled = remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -60,18 +74,19 @@ fun PrivacySettingsScreen(
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            // Tracking Protection
+            // Tracking Protection Section
             SettingsCategory(title = "Tracking Protection")
-
+            
             Text(
                 text = "Protects against trackers that follow your activity across websites.",
                 style = MaterialTheme.typography.bodySmall
             )
-
+            
             Spacer(modifier = Modifier.height(8.dp))
 
+            // Tracking Protection Toggle
             SettingsItem(
-                title = "Enabled",
+                title = "Tracking Protection",
                 icon = Icons.Default.Shield,
                 onClick = { trackingProtectionEnabled.value = !trackingProtectionEnabled.value }
             ) {
@@ -81,20 +96,52 @@ fun PrivacySettingsScreen(
                 )
             }
 
+            // Tracking Protection Level
+            if (trackingProtectionEnabled.value) {
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                TrackingProtectionManager().getAllTrackingProtectionLevels().forEach { level ->
+                    val displayName = when (level) {
+                        TrackingProtectionManager.TrackingProtectionLevel.STANDARD -> "Standard"
+                        TrackingProtectionManager.TrackingProtectionLevel.STRICT -> "Strict"
+                        TrackingProtectionManager.TrackingProtectionLevel.CUSTOM -> "Custom"
+                    }
+                    val description = TrackingProtectionManager().getTrackingProtectionDescription(level)
+                    
+                    SettingsItem(
+                        title = displayName,
+                        icon = Icons.Default.Security,
+                        onClick = { trackingProtectionLevel.value = level }
+                    ) {
+                        if (trackingProtectionLevel.value == level) {
+                            Icon(Icons.Default.Lock, contentDescription = "Selected")
+                        }
+                    }
+                    
+                    if (trackingProtectionLevel.value == level) {
+                        Text(
+                            text = description,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(start = 32.dp, top = 4.dp, bottom = 8.dp)
+                        )
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
 
-            // HTTPS-Only Mode
+            // HTTPS-Only Mode Section
             SettingsCategory(title = "HTTPS-Only Mode")
-
+            
             Text(
-                text = "Forces all connections to use HTTPS for a more secure browsing experience.",
+                text = HttpsOnlyManager().getHttpsOnlyDescription(),
                 style = MaterialTheme.typography.bodySmall
             )
-
+            
             Spacer(modifier = Modifier.height(8.dp))
 
             SettingsItem(
-                title = "Enabled",
+                title = "HTTPS-Only Mode",
                 icon = Icons.Default.Https,
                 onClick = { httpsOnlyEnabled.value = !httpsOnlyEnabled.value }
             ) {
@@ -106,36 +153,40 @@ fun PrivacySettingsScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Clear Data on Exit
-            SettingsCategory(title = "Clear Data on Exit")
-
+            // Clear Browsing Data Section
+            SettingsCategory(title = "Clear Browsing Data")
+            
             Text(
-                text = "Clears browsing data (history, cookies, cache) when you exit the app.",
+                text = "Clear your browsing data to protect your privacy.",
                 style = MaterialTheme.typography.bodySmall
             )
-
+            
             Spacer(modifier = Modifier.height(8.dp))
 
             SettingsItem(
-                title = "Enabled",
-                icon = Icons.Default.Delete,
-                onClick = { clearDataOnExitEnabled.value = !clearDataOnExitEnabled.value }
+                title = "Clear Browsing Data",
+                icon = Icons.Default.CleanHands,
+                onClick = onNavigateToClearData
             ) {
-                Switch(
-                    checked = clearDataOnExitEnabled.value,
-                    onCheckedChange = { clearDataOnExitEnabled.value = it }
-                )
+                Icon(Icons.Default.ArrowForward, contentDescription = "Open")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Site Permissions
+            // Site Permissions Section
             SettingsCategory(title = "Site Permissions")
+            
+            Text(
+                text = "Manage permissions for specific websites.",
+                style = MaterialTheme.typography.bodySmall
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
 
             SettingsItem(
-                title = "Manage Permissions",
+                title = "Site Permissions",
                 icon = Icons.Default.Security,
-                onClick = { /* TODO: Navigate to Site Permissions */ }
+                onClick = onNavigateToSitePermissions
             ) {
                 Icon(Icons.Default.ArrowForward, contentDescription = "Open")
             }
