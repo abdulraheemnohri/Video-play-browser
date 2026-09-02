@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -22,9 +21,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.videoplay.browser.ui.screens.BookmarksScreen
 import com.videoplay.browser.ui.screens.BrowserScreen
+import com.videoplay.browser.ui.screens.ClearBrowsingDataScreen
 import com.videoplay.browser.ui.screens.DownloadsScreen
 import com.videoplay.browser.ui.screens.HistoryScreen
 import com.videoplay.browser.ui.screens.HomeScreen
+import com.videoplay.browser.ui.screens.PrivacySettingsScreen
+import com.videoplay.browser.ui.screens.SitePermissionsScreen
 import com.videoplay.browser.ui.screens.SettingsScreen
 import com.videoplay.browser.ui.screens.TabsScreen
 import com.videoplay.browser.ui.screens.VideoSettingsScreen
@@ -59,7 +61,21 @@ fun BrowserApp(modifier: Modifier = Modifier) {
                 navigationItems.forEach { item ->
                     NavigationBarItem(
                         selected = currentDestination == item.route,
-                        onClick = { navController.navigate(item.route) },
+                        onClick = { 
+                            navController.navigate(item.route) {
+                                // Pop up to the start destination of the graph to
+                                // avoid building up a large stack of destinations
+                                // on the back stack as users select items
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                // Avoid multiple copies of the same destination when
+                                // reselecting the same item
+                                launchSingleTop = true
+                                // Restore state when reselecting a previously selected item
+                                restoreState = true
+                            }
+                        },
                         icon = { Icon(item.icon, contentDescription = item.title) },
                         label = { Text(item.title) }
                     )
@@ -101,32 +117,66 @@ fun BrowserApp(modifier: Modifier = Modifier) {
                 composable("history") {
                     HistoryScreen(
                         onBack = { navController.popBackStack() },
-                        onNavigateToBrowser = { url -> navController.navigate("browser") }
+                        onNavigateToBrowser = { url -> 
+                            navController.navigate("browser") {
+                                launchSingleTop = true
+                            }
+                        }
                     )
                 }
 
                 composable("settings") {
                     SettingsScreen(
-                        onBack = { navController.popBackStack() }
+                        onBack = { navController.popBackStack() },
+                        onNavigateToPrivacy = { navController.navigate("privacy_settings") },
+                        onNavigateToVideoSettings = { navController.navigate("video_settings") }
                     )
                 }
 
                 composable("bookmarks") {
                     BookmarksScreen(
                         onBack = { navController.popBackStack() },
-                        onNavigateToBrowser = { url -> navController.navigate("browser") }
+                        onNavigateToBrowser = { url -> 
+                            navController.navigate("browser") {
+                                launchSingleTop = true
+                            }
+                        }
                     )
                 }
 
                 composable("downloads") {
                     DownloadsScreen(
                         onBack = { navController.popBackStack() },
-                        onOpenDownload = { url -> navController.navigate("browser") }
+                        onOpenDownload = { url -> 
+                            navController.navigate("browser") {
+                                launchSingleTop = true
+                            }
+                        }
                     )
                 }
 
                 composable("video_settings") {
                     VideoSettingsScreen(
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+
+                composable("privacy_settings") {
+                    PrivacySettingsScreen(
+                        onBack = { navController.popBackStack() },
+                        onNavigateToClearData = { navController.navigate("clear_data") },
+                        onNavigateToSitePermissions = { navController.navigate("site_permissions") }
+                    )
+                }
+
+                composable("clear_data") {
+                    ClearBrowsingDataScreen(
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+
+                composable("site_permissions") {
+                    SitePermissionsScreen(
                         onBack = { navController.popBackStack() }
                     )
                 }
