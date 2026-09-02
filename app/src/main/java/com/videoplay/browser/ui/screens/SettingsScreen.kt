@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
@@ -35,10 +36,11 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onNavigateToPrivacy: () -> Unit,
+    onNavigateToVideoSettings: () -> Unit
 ) {
     val darkModeEnabled = remember { mutableStateOf(false) }
-    val trackingProtectionEnabled = remember { mutableStateOf(true) }
     val autoplayEnabled = remember { mutableStateOf(false) }
 
     Scaffold(
@@ -101,7 +103,7 @@ fun SettingsScreen(
             SettingsItem(
                 title = "Video Settings",
                 icon = Icons.Default.VideoLibrary,
-                onClick = { /* TODO: Navigate to Video Settings */ }
+                onClick = onNavigateToVideoSettings
             ) {
                 Icon(Icons.Default.ArrowForward, contentDescription = "Open")
             }
@@ -112,20 +114,9 @@ fun SettingsScreen(
             SettingsCategory(title = "Privacy")
             
             SettingsItem(
-                title = "Tracking Protection",
-                icon = Icons.Default.Security,
-                onClick = { trackingProtectionEnabled.value = !trackingProtectionEnabled.value }
-            ) {
-                Switch(
-                    checked = trackingProtectionEnabled.value,
-                    onCheckedChange = { trackingProtectionEnabled.value = it }
-                )
-            }
-
-            SettingsItem(
                 title = "Privacy Settings",
                 icon = Icons.Default.Security,
-                onClick = { /* TODO: Navigate to Privacy Settings */ }
+                onClick = onNavigateToPrivacy
             ) {
                 Icon(Icons.Default.ArrowForward, contentDescription = "Open")
             }
