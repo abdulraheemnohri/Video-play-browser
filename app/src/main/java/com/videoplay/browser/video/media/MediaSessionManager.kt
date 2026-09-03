@@ -1,32 +1,27 @@
 package com.videoplay.browser.video.media
 
 import android.content.Context
+import android.media.MediaMetadata
 import android.media.session.MediaSession
 import android.media.session.PlaybackState
 import android.os.Build
-import androidx.annotation.RequiresApi
 
 /**
  * Manages Android MediaSession for video playback.
- * Provides integration with lock screen and Bluetooth controls.
+ * Provides integration with lock screen, notifications, and Bluetooth media controls.
  */
-@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 class MediaSessionManager(private val context: Context) {
 
     private var mediaSession: MediaSession? = null
-    private var playbackState: PlaybackState? = null
 
     init {
         createMediaSession()
     }
 
-    /**
-     * Creates a MediaSession instance.
-     */
     private fun createMediaSession() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mediaSession = MediaSession(context, "VIDEOPlayBrowser").apply {
-                setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS or MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS)
+                isActive = true
                 setPlaybackState(
                     PlaybackState.Builder()
                         .setState(PlaybackState.STATE_NONE, 0, 0f)
@@ -35,7 +30,8 @@ class MediaSessionManager(private val context: Context) {
                                     PlaybackState.ACTION_PAUSE or
                                     PlaybackState.ACTION_PLAY_PAUSE or
                                     PlaybackState.ACTION_SKIP_TO_NEXT or
-                                    PlaybackState.ACTION_SKIP_TO_PREVIOUS
+                                    PlaybackState.ACTION_SKIP_TO_PREVIOUS or
+                                    PlaybackState.ACTION_SEEK_TO
                         )
                         .build()
                 )
@@ -43,54 +39,47 @@ class MediaSessionManager(private val context: Context) {
         }
     }
 
-    /**
-     * Updates the playback state.
-     * @param state The new playback state (e.g., STATE_PLAYING, STATE_PAUSED).
-     * @param position The current playback position in milliseconds.
-     * @param speed The playback speed (e.g., 1.0 for normal speed).
-     */
     fun updatePlaybackState(state: Int, position: Long, speed: Float) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            playbackState = PlaybackState.Builder()
+            val playbackState = PlaybackState.Builder()
                 .setState(state, position, speed)
                 .setActions(
                     PlaybackState.ACTION_PLAY or
                             PlaybackState.ACTION_PAUSE or
                             PlaybackState.ACTION_PLAY_PAUSE or
                             PlaybackState.ACTION_SKIP_TO_NEXT or
-                            PlaybackState.ACTION_SKIP_TO_PREVIOUS
+                            PlaybackState.ACTION_SKIP_TO_PREVIOUS or
+                            PlaybackState.ACTION_SEEK_TO
                 )
                 .build()
             mediaSession?.setPlaybackState(playbackState)
         }
     }
 
-    /**
-     * Sets the metadata for the current media.
-     * @param title The title of the media.
-     * @param duration The duration of the media in milliseconds.
-     */
     fun setMediaMetadata(title: String, duration: Long) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val metadata = android.media.MediaMetadata.Builder()
-                .putString(android.media.MediaMetadata.METADATA_KEY_TITLE, title)
-                .putLong(android.media.MediaMetadata.METADATA_KEY_DURATION, duration)
+            val metadata = MediaMetadata.Builder()
+                .putString(MediaMetadata.METADATA_KEY_TITLE, title)
+                .putLong(MediaMetadata.METADATA_KEY_DURATION, duration)
                 .build()
             mediaSession?.setMetadata(metadata)
         }
     }
 
-    /**
-     * Releases the MediaSession.
-     */
+    fun setCallback(callback: MediaSession.Callback) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mediaSession?.setCallback(callback)
+        }
+    }
+
     fun release() {
-        mediaSession?.release()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mediaSession?.isActive = false
+            mediaSession?.release()
+        }
         mediaSession = null
     }
 
-    /**
-     * Gets the MediaSession instance.
-     */
     fun getMediaSession(): MediaSession? {
         return mediaSession
     }

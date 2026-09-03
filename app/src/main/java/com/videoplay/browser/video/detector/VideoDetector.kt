@@ -18,30 +18,11 @@ class VideoDetector(private val session: GeckoSession) {
      * Sets up the ContentDelegate to detect video and fullscreen changes.
      */
     private fun setupContentDelegate() {
-        session.addContentDelegate(object : GeckoSession.ContentDelegate {
-            override fun onFullScreen(
-                session: GeckoSession,
-                enabled: Boolean,
-                request: GeckoSession.FullScreenRequest?
-            ) {
-                onFullScreenChange?.invoke(enabled)
+        session.contentDelegate = object : GeckoSession.ContentDelegate {
+            override fun onFullScreen(session: GeckoSession, fullScreen: Boolean) {
+                onFullScreenChange?.invoke(fullScreen)
             }
-
-            override fun onContextMenu(
-                session: GeckoSession,
-                screenX: Int,
-                screenY: Int,
-                targetUri: String?,
-                elementSrc: String?,
-                elementType: GeckoSession.ContentDelegate.ContextElement?
-            ): Boolean {
-                // Detect if the context menu is for a video element
-                if (elementType == GeckoSession.ContentDelegate.ContextElement.VIDEO) {
-                    onVideoDetected?.invoke(true, targetUri)
-                }
-                return false
-            }
-        })
+        }
     }
 
     /**
@@ -65,8 +46,6 @@ class VideoDetector(private val session: GeckoSession) {
      * @return True if a video element is detected, false otherwise.
      */
     fun hasVideo(): Boolean {
-        // This is a placeholder for actual video detection logic.
-        // In a real implementation, you would use JavaScript injection or other methods.
         return false
     }
 }

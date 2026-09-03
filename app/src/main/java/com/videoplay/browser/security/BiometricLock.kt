@@ -1,6 +1,7 @@
 package com.videoplay.browser.security
 
 import android.content.Context
+import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
@@ -11,25 +12,12 @@ import java.util.concurrent.Executor
  */
 class BiometricLock(private val context: Context) {
 
-    private lateinit var executor: Executor
+    private val executor: Executor = ContextCompat.getMainExecutor(context)
     private lateinit var biometricPrompt: BiometricPrompt
     private var onAuthenticationSucceeded: (() -> Unit)? = null
     private var onAuthenticationFailed: (() -> Unit)? = null
     private var onAuthenticationError: ((Int, String) -> Unit)? = null
 
-    init {
-        executor = ContextCompat.getMainExecutor(context)
-    }
-
-    /**
-     * Shows the biometric authentication prompt.
-     * @param activity The activity to attach the prompt to.
-     * @param title The title of the prompt.
-     * @param subtitle The subtitle of the prompt.
-     * @param onSucceeded Callback for successful authentication.
-     * @param onFailed Callback for failed authentication.
-     * @param onError Callback for authentication errors.
-     */
     fun showBiometricPrompt(
         activity: FragmentActivity,
         title: String = "Unlock VIDEOPlay",
@@ -45,8 +33,7 @@ class BiometricLock(private val context: Context) {
         val promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle(title)
             .setSubtitle(subtitle)
-            .setAllowedAuthenticators(BiometricPrompt.AUTHENTICATOR_BIOMETRIC_STRONG)
-            .setNegativeButtonText("Cancel")
+            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
             .build()
 
         biometricPrompt = BiometricPrompt(
@@ -73,16 +60,11 @@ class BiometricLock(private val context: Context) {
         biometricPrompt.authenticate(promptInfo)
     }
 
-    /**
-     * Checks if biometric authentication is available on the device.
-     */
     fun isBiometricAvailable(): Boolean {
-        return BiometricPrompt.isDeviceCredentialAllowed(context)
+        val biometricManager = BiometricManager.from(context)
+        return biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS
     }
 
-    /**
-     * Cancels the biometric prompt if it is showing.
-     */
     fun cancelAuthentication() {
         if (::biometricPrompt.isInitialized) {
             biometricPrompt.cancelAuthentication()

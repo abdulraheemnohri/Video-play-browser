@@ -3,6 +3,7 @@ package com.videoplay.browser.video.pip
 import android.app.PictureInPictureParams
 import android.content.Context
 import android.os.Build
+import android.util.Rational
 import androidx.annotation.RequiresApi
 
 /**
@@ -20,12 +21,12 @@ class VideoPipManager(private val context: Context) {
      */
     fun enterPipMode(autoEnter: Boolean = false) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val params = PictureInPictureParams.Builder()
-                .setAutoEnterEnabled(autoEnter)
-                .build()
-            pipParams = params
+            val builder = PictureInPictureParams.Builder()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                builder.setAutoEnterEnabled(autoEnter)
+            }
+            pipParams = builder.build()
             isInPipMode = true
-            // Note: Actual PiP mode entry is handled by the Activity
         }
     }
 
@@ -35,7 +36,6 @@ class VideoPipManager(private val context: Context) {
     fun exitPipMode() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isInPipMode) {
             isInPipMode = false
-            // Note: Actual PiP mode exit is handled by the Activity
         }
     }
 
@@ -52,9 +52,9 @@ class VideoPipManager(private val context: Context) {
 
     /**
      * Updates PiP parameters.
-     * @param aspectRatio The aspect ratio for PiP (e.g., 16f/9f).
+     * @param aspectRatio The aspect ratio for PiP as Rational (e.g., Rational(16, 9)).
      */
-    fun updatePipParams(aspectRatio: Float) {
+    fun updatePipParams(aspectRatio: Rational) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             pipParams = PictureInPictureParams.Builder()
                 .setAspectRatio(aspectRatio)

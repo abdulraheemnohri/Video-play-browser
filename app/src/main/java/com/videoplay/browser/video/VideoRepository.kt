@@ -3,6 +3,7 @@ package com.videoplay.browser.video
 import com.videoplay.browser.database.dao.VideoHistoryDao
 import com.videoplay.browser.database.entities.VideoHistoryEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import java.util.Date
 
 /**
@@ -51,7 +52,7 @@ class VideoRepository(private val videoHistoryDao: VideoHistoryDao) {
         duration: Long,
         isPrivate: Boolean = false
     ) {
-        val existingEntry = videoHistoryDao.getAll().value.find { it.url == url }
+        val existingEntry = videoHistoryDao.getAll().first().find { it.url == url }
         
         if (existingEntry != null) {
             // Update existing entry
@@ -84,7 +85,7 @@ class VideoRepository(private val videoHistoryDao: VideoHistoryDao) {
      * @param position The new playback position in milliseconds.
      */
     suspend fun updateVideoPosition(url: String, position: Long) {
-        val existingEntry = videoHistoryDao.getAll().value.find { it.url == url }
+        val existingEntry = videoHistoryDao.getAll().first().find { it.url == url }
         
         if (existingEntry != null) {
             val updatedEntry = existingEntry.copy(
@@ -131,7 +132,7 @@ class VideoRepository(private val videoHistoryDao: VideoHistoryDao) {
      * @param url The URL of the video.
      */
     suspend fun getVideoHistoryByUrl(url: String): VideoHistoryEntity? {
-        return videoHistoryDao.getAll().value.find { it.url == url }
+        return videoHistoryDao.getAll().first().find { it.url == url }
     }
 
     /**
@@ -139,7 +140,7 @@ class VideoRepository(private val videoHistoryDao: VideoHistoryDao) {
      * @param url The URL of the video.
      */
     suspend fun isVideoInHistory(url: String): Boolean {
-        return videoHistoryDao.getAll().value.any { it.url == url }
+        return videoHistoryDao.getAll().first().any { it.url == url }
     }
 
     /**
@@ -148,6 +149,6 @@ class VideoRepository(private val videoHistoryDao: VideoHistoryDao) {
      * @return The playback position in milliseconds, or 0 if not found.
      */
     suspend fun getVideoPosition(url: String): Long {
-        return videoHistoryDao.getAll().value.find { it.url == url }?.position ?: 0L
+        return videoHistoryDao.getAll().first().find { it.url == url }?.position ?: 0L
     }
 }

@@ -1,5 +1,7 @@
 package com.videoplay.browser.privacy
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,8 +27,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -43,11 +47,8 @@ fun ClearBrowsingDataScreen(
     val context = LocalContext.current
     val clearBrowsingDataManager = remember { ClearBrowsingDataManager(context) }
     
-    // State for selected data types
-    val selectedDataTypes = remember { mutableStateOf(setOf<ClearBrowsingDataManager.DataType>()) }
-    
-    // State for showing confirmation dialog
-    val showConfirmationDialog = remember { mutableStateOf(false) }
+    var selectedDataTypes by remember { mutableStateOf(setOf<ClearBrowsingDataManager.DataType>()) }
+    var showConfirmationDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -81,29 +82,28 @@ fun ClearBrowsingDataScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Data type options
             clearBrowsingDataManager.getDataTypesForDisplay().forEach { (dataType, displayName) ->
                 if (dataType != ClearBrowsingDataManager.DataType.ALL) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                selectedDataTypes.value = if (dataType in selectedDataTypes.value) {
-                                    selectedDataTypes.value - dataType
+                                selectedDataTypes = if (dataType in selectedDataTypes) {
+                                    selectedDataTypes - dataType
                                 } else {
-                                    selectedDataTypes.value + dataType
+                                    selectedDataTypes + dataType
                                 }
                             }
                             .padding(vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Checkbox(
-                            checked = dataType in selectedDataTypes.value,
+                            checked = dataType in selectedDataTypes,
                             onCheckedChange = { isChecked ->
-                                selectedDataTypes.value = if (isChecked) {
-                                    selectedDataTypes.value + dataType
+                                selectedDataTypes = if (isChecked) {
+                                    selectedDataTypes + dataType
                                 } else {
-                                    selectedDataTypes.value - dataType
+                                    selectedDataTypes - dataType
                                 }
                             }
                         )
@@ -124,20 +124,19 @@ fun ClearBrowsingDataScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Select All / Deselect All buttons
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 OutlinedButton(
-                    onClick = { selectedDataTypes.value = emptySet() }
+                    onClick = { selectedDataTypes = emptySet() }
                 ) {
                     Text("Deselect All")
                 }
 
                 OutlinedButton(
                     onClick = { 
-                        selectedDataTypes.value = clearBrowsingDataManager.getDefaultDataTypes()
+                        selectedDataTypes = clearBrowsingDataManager.getDefaultDataTypes()
                     }
                 ) {
                     Text("Select Default")
@@ -146,9 +145,8 @@ fun ClearBrowsingDataScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Clear data button
             Button(
-                onClick = { showConfirmationDialog.value = true },
+                onClick = { showConfirmationDialog = true },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.error,
@@ -163,10 +161,9 @@ fun ClearBrowsingDataScreen(
             Spacer(modifier = Modifier.height(16.dp))
         }
 
-        // Confirmation dialog
-        if (showConfirmationDialog.value) {
+        if (showConfirmationDialog) {
             AlertDialog(
-                onDismissRequest = { showConfirmationDialog.value = false },
+                onDismissRequest = { showConfirmationDialog = false },
                 title = { Text("Clear Browsing Data") },
                 text = {
                     Column {
@@ -184,10 +181,10 @@ fun ClearBrowsingDataScreen(
                 confirmButton = {
                     Button(
                         onClick = {
-                            showConfirmationDialog.value = false
+                            showConfirmationDialog = false
                             clearBrowsingDataManager.clearBrowsingData(
-                                selectedDataTypes.value,
-                                onComplete = { /* Clearing complete */ }
+                                selectedDataTypes,
+                                onComplete = { }
                             )
                         },
                         colors = ButtonDefaults.buttonColors(
@@ -200,7 +197,7 @@ fun ClearBrowsingDataScreen(
                 },
                 dismissButton = {
                     OutlinedButton(
-                        onClick = { showConfirmationDialog.value = false }
+                        onClick = { showConfirmationDialog = false }
                     ) {
                         Text("Cancel")
                     }
@@ -209,6 +206,3 @@ fun ClearBrowsingDataScreen(
         }
     }
 }
-
-// Extension function for Set to make it clickable
-fun <T> Set<T>.clickable(): Set<T> = this

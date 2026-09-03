@@ -9,9 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import com.videoplay.browser.gecko.runtime.GeckoRuntimeManager
+import com.videoplay.browser.gecko.session.GeckoSessionManager
 import com.videoplay.browser.ui.theme.VIDEOPlayBrowserTheme
 import com.videoplay.browser.video.playback.VideoPlayerScreen
-import com.videoplay.browser.video.playback.VideoPlayerViewModel
 import org.mozilla.geckoview.GeckoSession
 
 /**
@@ -30,9 +31,13 @@ class FullscreenVideoActivity : ComponentActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
 
-        // Get the GeckoSession from the intent
-        val session = intent.getParcelableExtra<GeckoSession>(EXTRA_SESSION)
-            ?: throw IllegalStateException("No GeckoSession provided")
+        GeckoRuntimeManager.initialize(this)
+        val runtime = GeckoRuntimeManager.getRuntime()
+        val session = if (runtime != null) {
+            GeckoSessionManager(runtime).createSession()
+        } else {
+            GeckoSession()
+        }
 
         setContent {
             VIDEOPlayBrowserTheme {
@@ -47,14 +52,5 @@ class FullscreenVideoActivity : ComponentActivity() {
                 }
             }
         }
-    }
-
-    override fun onBackPressed() {
-        // Exit fullscreen mode
-        super.onBackPressed()
-    }
-
-    companion object {
-        const val EXTRA_SESSION = "extra_session"
     }
 }

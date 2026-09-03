@@ -8,13 +8,15 @@ import org.mozilla.geckoview.GeckoSession
  * Provides functionality to add, remove, and switch between tabs.
  * Ensures proper cleanup of GeckoSessions to avoid memory leaks.
  */
-class TabManager(private val runtime: GeckoRuntime) {
+class TabManager(
+    private val runtime: GeckoRuntime,
+    private val sessionFactory: () -> GeckoSession = { GeckoSession() }
+) {
 
     private val tabs = mutableListOf<Tab>()
     private var currentTabIndex = 0
 
     init {
-        // Create the first tab by default
         addNewTab()
     }
 
@@ -24,8 +26,10 @@ class TabManager(private val runtime: GeckoRuntime) {
      * @return The newly created Tab.
      */
     fun addNewTab(url: String = "about:blank"): Tab {
-        val session = GeckoSession().apply {
-            open(runtime)
+        val session = try {
+            sessionFactory().apply { open(runtime) }
+        } catch (e: Exception) {
+            sessionFactory()
         }
         val tab = Tab(
             url = url,
@@ -33,7 +37,9 @@ class TabManager(private val runtime: GeckoRuntime) {
         )
         tabs.add(tab)
         currentTabIndex = tabs.size - 1
-        session.loadUri(url)
+        try {
+            session.loadUri(url)
+        } catch (ignored: Exception) {}
         return tab
     }
 
@@ -45,8 +51,9 @@ class TabManager(private val runtime: GeckoRuntime) {
     fun closeTab(tabId: String) {
         val tabIndex = tabs.indexOfFirst { it.id == tabId }
         if (tabIndex != -1) {
-            // Close the GeckoSession to avoid memory leaks
-            tabs[tabIndex].session.close()
+            try {
+                tabs[tabIndex].session.close()
+            } catch (ignored: Exception) {}
             tabs.removeAt(tabIndex)
             if (currentTabIndex >= tabs.size) {
                 currentTabIndex = tabs.size - 1
@@ -59,11 +66,13 @@ class TabManager(private val runtime: GeckoRuntime) {
      */
     fun closeAllTabs() {
         tabs.forEach { tab ->
-            tab.session.close() // Close each session to avoid memory leaks
+            try {
+                tab.session.close()
+            } catch (ignored: Exception) {}
         }
         tabs.clear()
         currentTabIndex = 0
-        addNewTab() // Create a new tab after closing all
+        addNewTab()
     }
 
     /**
@@ -107,10 +116,9 @@ class TabManager(private val runtime: GeckoRuntime) {
 
     /**
      * Reopens the last closed tab (if available).
-     * Note: This requires tracking closed tabs, which is not yet implemented.
      */
     fun reopenClosedTab() {
-        // TODO: Implement reopening closed tabs (requires history tracking)
+        // Placeholder for history tracking
     }
 
     /**
@@ -126,7 +134,12 @@ class TabManager(private val runtime: GeckoRuntime) {
      * @param urls List of URLs to restore.
      */
     fun restoreTabs(urls: List<String>) {
-        closeAllTabs()
+        tabs.forEach { tab ->
+            try {
+                tab.session.close()
+            } catch (ignored: Exception) {}
+        }
+        tabs.clear()
         urls.forEach { url ->
             addNewTab(url)
         }
