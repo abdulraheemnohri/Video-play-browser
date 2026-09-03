@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.videoplay.browser">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -39,12 +38,13 @@
         android:usesCleartextTraffic="false"
         tools:targetApi="34">
 
-        <!-- Default Browser -->
+        <!-- Main Activity -->
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.VIDEOPlayBrowser">
+            android:theme="@style/Theme.VIDEOPlayBrowser"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|uiMode|layoutDirection|keyboard|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -58,23 +58,6 @@
             </intent-filter>
         </activity>
 
-        <!-- Browser Activity -->
-        <activity
-            android:name=".ui.BrowserActivity"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.VIDEOPlayBrowser" />
-
-        <!-- Video Player Activity -->
-        <activity
-            android:name=".video.playback.VideoPlayerActivity"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.VIDEOPlayBrowser.NoActionBar"
-            android:supportsPictureInPicture="true"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|uiMode|isLayoutDirectionChanged|keyboard|keyboardHidden|navigation|mnc|density|fontScale|screenLayout|orientation|uiMode"
-            android:windowSoftInputMode="adjustResize" />
-
         <!-- Fullscreen Video Activity -->
         <activity
             android:name=".video.fullscreen.FullscreenVideoActivity"
@@ -82,33 +65,16 @@
             android:launchMode="singleTop"
             android:theme="@style/Theme.VIDEOPlayBrowser.Fullscreen"
             android:supportsPictureInPicture="true"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|uiMode|isLayoutDirectionChanged|keyboard|keyboardHidden|navigation|mnc|density|fontScale" />
-
-        <!-- Settings Activity -->
-        <activity
-            android:name=".settings.SettingsActivity"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.VIDEOPlayBrowser" />
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|uiMode|layoutDirection|keyboard|keyboardHidden|navigation|mnc|density|fontScale" />
 
         <!-- Service for Downloads -->
         <service
             android:name=".downloads.DownloadService"
             android:exported="false" />
 
-        <!-- Service for MediaSession -->
-        <service
-            android:name=".video.media.MediaSessionService"
-            android:exported="false" />
-
-        <!-- Receiver for Notifications -->
-        <receiver
-            android:name=".downloads.DownloadReceiver"
-            android:exported="false" />
-
         <!-- App Shortcuts -->
         <meta-data
-            android:name="android.app.android.shortcuts"
+            android:name="android.app.shortcuts"
             android:resource="@xml/shortcuts" />
 
         <!-- Default Browser -->

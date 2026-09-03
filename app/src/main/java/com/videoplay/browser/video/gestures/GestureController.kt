@@ -1,11 +1,15 @@
 package com.videoplay.browser.video.gestures
 
-import android.view.MotionEvent
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+
+typealias BrightnessChange = (Float) -> Unit
+typealias VolumeChange = (Float) -> Unit
+typealias Seek = (Long) -> Unit
+typealias TogglePlayPause = () -> Unit
+typealias SpeedChange = (Float) -> Unit
 
 /**
  * Controls gesture interactions for the video player.
@@ -24,13 +28,6 @@ class GestureController {
     var brightnessSensitivity: Float = 1.0f
     var volumeSensitivity: Float = 1.0f
     var seekSensitivity: Float = 1.0f
-
-    // Callback types
-    typealias BrightnessChange = (Float) -> Unit
-    typealias VolumeChange = (Float) -> Unit
-    typealias Seek = (Long) -> Unit
-    typealias TogglePlayPause = () -> Unit
-    typealias SpeedChange = (Float) -> Unit
 
     // Callbacks
     private var onBrightnessChange: BrightnessChange? = null
@@ -117,7 +114,7 @@ class GestureController {
                 onTap = { /* Handle single tap */ },
                 onDoubleTap = { offset ->
                     if (isDoubleTapSeekEnabled) {
-                        handleDoubleTap(offset.x, size.width)
+                        handleDoubleTap(offset.x, size.width.toFloat())
                     }
                 },
                 onLongPress = { offset ->
@@ -135,13 +132,10 @@ class GestureController {
      */
     private fun handleDragGesture(deltaX: Float, deltaY: Float) {
         if (isBrightnessGestureEnabled && deltaY != 0f) {
-            // Left side of screen for brightness
-            // This would need screen width information
             val brightnessChange = deltaY * brightnessSensitivity * 0.01f
             val newBrightness = (currentBrightness - brightnessChange).coerceIn(0f, 1f)
             onBrightnessChange?.invoke(newBrightness)
         } else if (isVolumeGestureEnabled && deltaY != 0f) {
-            // Right side of screen for volume
             val volumeChange = deltaY * volumeSensitivity * 0.01f
             val newVolume = (currentVolume - volumeChange).coerceIn(0f, 1f)
             onVolumeChange?.invoke(newVolume)
@@ -171,7 +165,6 @@ class GestureController {
      * Handles long press for speed control.
      */
     private fun handleLongPress() {
-        // Toggle between normal speed and 2x speed
         val newSpeed = if (currentSpeed == 1.0f) 2.0f else 1.0f
         onSpeedChange?.invoke(newSpeed)
     }

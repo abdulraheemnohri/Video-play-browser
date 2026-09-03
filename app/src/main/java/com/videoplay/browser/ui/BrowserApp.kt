@@ -1,9 +1,17 @@
 package com.videoplay.browser.ui
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Public
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Tab
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -12,24 +20,24 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.videoplay.browser.privacy.ClearBrowsingDataScreen
+import com.videoplay.browser.privacy.SitePermissionsScreen
 import com.videoplay.browser.ui.screens.BookmarksScreen
 import com.videoplay.browser.ui.screens.BrowserScreen
-import com.videoplay.browser.ui.screens.ClearBrowsingDataScreen
 import com.videoplay.browser.ui.screens.DownloadsScreen
 import com.videoplay.browser.ui.screens.HistoryScreen
 import com.videoplay.browser.ui.screens.HomeScreen
 import com.videoplay.browser.ui.screens.PrivacySettingsScreen
-import com.videoplay.browser.ui.screens.SitePermissionsScreen
 import com.videoplay.browser.ui.screens.SettingsScreen
 import com.videoplay.browser.ui.screens.TabsScreen
-import com.videoplay.browser.ui.screens.VideoSettingsScreen
+import com.videoplay.browser.video.settings.VideoSettingsScreen
 
 /**
  * Root Composable for the VIDEOPlay Browser app.
@@ -42,13 +50,12 @@ fun BrowserApp(modifier: Modifier = Modifier) {
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStackEntry?.destination?.route
 
-    // Navigation items for bottom navigation
     val navigationItems = listOf(
-        NavigationItem("home", "Home", androidx.compose.material.icons.Icons.Default.Home),
-        NavigationItem("browser", "Browser", androidx.compose.material.icons.Icons.Default.Public),
-        NavigationItem("tabs", "Tabs", androidx.compose.material.icons.Icons.Default.Tab),
-        NavigationItem("history", "History", androidx.compose.material.icons.Icons.Default.History),
-        NavigationItem("settings", "Settings", androidx.compose.material.icons.Icons.Default.Settings)
+        NavigationItem("home", "Home", Icons.Default.Home),
+        NavigationItem("browser", "Browser", Icons.Default.Public),
+        NavigationItem("tabs", "Tabs", Icons.Default.Tab),
+        NavigationItem("history", "History", Icons.Default.History),
+        NavigationItem("settings", "Settings", Icons.Default.Settings)
     )
 
     Scaffold(
@@ -63,16 +70,10 @@ fun BrowserApp(modifier: Modifier = Modifier) {
                         selected = currentDestination == item.route,
                         onClick = { 
                             navController.navigate(item.route) {
-                                // Pop up to the start destination of the graph to
-                                // avoid building up a large stack of destinations
-                                // on the back stack as users select items
                                 popUpTo(navController.graph.findStartDestination().id) {
                                     saveState = true
                                 }
-                                // Avoid multiple copies of the same destination when
-                                // reselecting the same item
                                 launchSingleTop = true
-                                // Restore state when reselecting a previously selected item
                                 restoreState = true
                             }
                         },
@@ -83,12 +84,12 @@ fun BrowserApp(modifier: Modifier = Modifier) {
             }
         }
     ) { paddingValues ->
-        androidx.compose.foundation.layout.Box(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            androidx.navigation.compose.NavHost(
+            NavHost(
                 navController = navController,
                 startDestination = "home",
                 modifier = Modifier.fillMaxSize()

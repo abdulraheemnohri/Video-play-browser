@@ -18,7 +18,7 @@ class SessionManager(private val application: BrowserApplication) {
         PreferenceManager.getDefaultSharedPreferences(application)
     }
 
-    private val tabManager: TabManager by lazy {
+    private val mTabManager: TabManager by lazy {
         TabManager(GeckoRuntimeManager.getRuntime()!!)
     }
 
@@ -27,13 +27,10 @@ class SessionManager(private val application: BrowserApplication) {
         private const val PREFS_KEY_CURRENT_TAB_INDEX = "current_tab_index"
     }
 
-    /**
-     * Saves the current tabs for session restoration.
-     */
     fun saveSession() {
-        val tabs = tabManager.getTabs()
+        val tabs = mTabManager.getTabs()
         val urls = tabs.map { it.url }
-        val currentIndex = tabManager.getCurrentTabIndex()
+        val currentIndex = mTabManager.getCurrentTabIndex()
 
         sharedPrefs.edit()
             .putStringSet(PREFS_KEY_TABS, urls.toSet())
@@ -41,26 +38,20 @@ class SessionManager(private val application: BrowserApplication) {
             .apply()
     }
 
-    /**
-     * Restores tabs from a saved session.
-     */
     fun restoreSession() {
         val urls = sharedPrefs.getStringSet(PREFS_KEY_TABS, emptySet())?.toList() ?: emptyList()
         val currentIndex = sharedPrefs.getInt(PREFS_KEY_CURRENT_TAB_INDEX, 0)
 
         if (urls.isNotEmpty()) {
             CoroutineScope(Dispatchers.IO).launch {
-                tabManager.restoreTabs(urls)
-                if (currentIndex < tabManager.getTabs().size) {
-                    tabManager.switchToTab(currentIndex)
+                mTabManager.restoreTabs(urls)
+                if (currentIndex < mTabManager.getTabs().size) {
+                    mTabManager.switchToTab(currentIndex)
                 }
             }
         }
     }
 
-    /**
-     * Clears the saved session.
-     */
     fun clearSession() {
         sharedPrefs.edit()
             .remove(PREFS_KEY_TABS)
@@ -68,10 +59,7 @@ class SessionManager(private val application: BrowserApplication) {
             .apply()
     }
 
-    /**
-     * Returns the TabManager instance.
-     */
     fun getTabManager(): TabManager {
-        return tabManager
+        return mTabManager
     }
 }

@@ -12,43 +12,27 @@ import com.videoplay.browser.database.dao.VideoHistoryDao
  */
 object DatabaseModule {
 
-    // Lazy initialization of the database
-    private val database: AppDatabase by lazy {
+    private val dbInstance: AppDatabase by lazy {
         BrowserApplication().database
     }
 
-    /**
-     * Gets the AppDatabase instance.
-     */
     fun getDatabase(): AppDatabase {
-        return database
+        return dbInstance
     }
 
-    /**
-     * Gets the HistoryDao instance.
-     */
     fun getHistoryDao(): HistoryDao {
-        return database.historyDao()
+        return dbInstance.historyDao()
     }
 
-    /**
-     * Gets the BookmarkDao instance.
-     */
     fun getBookmarkDao(): BookmarkDao {
-        return database.bookmarkDao()
+        return dbInstance.bookmarkDao()
     }
 
-    /**
-     * Gets the VideoHistoryDao instance.
-     */
     fun getVideoHistoryDao(): VideoHistoryDao {
-        return database.videoHistoryDao()
+        return dbInstance.videoHistoryDao()
     }
 
-    /**
-     * Gets the DownloadDao instance.
-     */
     fun getDownloadDao(): DownloadDao {
-        return database.downloadDao()
+        return dbInstance.downloadDao()
     }
 }

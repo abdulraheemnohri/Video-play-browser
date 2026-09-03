@@ -1,24 +1,21 @@
 package com.videoplay.browser.ui.screens
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.CleanHands
+import androidx.compose.material.icons.filled.CleaningServices
 import androidx.compose.material.icons.filled.Https
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
@@ -30,9 +27,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.videoplay.browser.privacy.ClearBrowsingDataManager
 import com.videoplay.browser.privacy.HttpsOnlyManager
 import com.videoplay.browser.privacy.TrackingProtectionManager
+import com.videoplay.browser.ui.components.SettingsCategory
+import com.videoplay.browser.ui.components.SettingsItem
 
 /**
  * Privacy Settings Screen for VIDEOPlay Browser.
@@ -61,7 +59,7 @@ fun PrivacySettingsScreen(
             TopAppBar(
                 title = { Text("Privacy Settings") },
                 navigationIcon = {
-                    androidx.compose.material3.IconButton(onClick = onBack) {
+                    IconButton(onClick = onBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 }
@@ -165,7 +163,7 @@ fun PrivacySettingsScreen(
 
             SettingsItem(
                 title = "Clear Browsing Data",
-                icon = Icons.Default.CleanHands,
+                icon = Icons.Default.CleaningServices,
                 onClick = onNavigateToClearData
             ) {
                 Icon(Icons.Default.ArrowForward, contentDescription = "Open")
@@ -198,44 +196,5 @@ fun PrivacySettingsScreen(
                 style = MaterialTheme.typography.bodySmall
             )
         }
-    }
-}
-
-/**
- * Composable for a settings category header.
- */
-@Composable
-fun SettingsCategory(title: String) {
-    Text(
-        text = title,
-        style = MaterialTheme.typography.titleMedium
-    )
-    Spacer(modifier = Modifier.height(8.dp))
-}
-
-/**
- * Composable for a settings item.
- */
-@Composable
-fun SettingsItem(
-    title: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    onClick: () -> Unit,
-    trailingContent: @Composable () -> Unit = {}
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(vertical = 8.dp),
-        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
-    ) {
-        Icon(icon, contentDescription = title)
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(
-            text = title,
-            modifier = Modifier.weight(1f)
-        )
-        trailingContent()
     }
 }

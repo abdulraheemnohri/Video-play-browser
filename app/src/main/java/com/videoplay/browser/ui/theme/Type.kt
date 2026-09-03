@@ -2,17 +2,11 @@ package com.videoplay.browser.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-// Define a custom font family (replace with actual font files if needed)
-val DefaultFontFamily = FontFamily(
-    Font(androidx.compose.ui.R.font.roboto_regular, FontWeight.Normal),
-    Font(androidx.compose.ui.R.font.roboto_medium, FontWeight.Medium),
-    Font(androidx.compose.ui.R.font.roboto_bold, FontWeight.Bold)
-)
+val DefaultFontFamily = FontFamily.Default
 
 val Typography = Typography(
     displayLarge = TextStyle(

@@ -4,11 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.videoplay.browser.database.dao.BookmarkDao
 import com.videoplay.browser.database.dao.DownloadDao
 import com.videoplay.browser.database.dao.HistoryDao
 import com.videoplay.browser.database.dao.VideoHistoryDao
 import com.videoplay.browser.database.entities.BookmarkEntity
+import com.videoplay.browser.database.entities.BookmarkFolderEntity
 import com.videoplay.browser.database.entities.DownloadEntity
 import com.videoplay.browser.database.entities.HistoryEntity
 import com.videoplay.browser.database.entities.VideoHistoryEntity
@@ -21,12 +23,14 @@ import com.videoplay.browser.database.entities.VideoHistoryEntity
     entities = [
         HistoryEntity::class,
         BookmarkEntity::class,
+        BookmarkFolderEntity::class,
         VideoHistoryEntity::class,
         DownloadEntity::class
     ],
     version = 1,
     exportSchema = false
 )
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun historyDao(): HistoryDao

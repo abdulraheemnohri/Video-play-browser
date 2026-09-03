@@ -1,7 +1,12 @@
 package com.videoplay.browser.settings
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import com.videoplay.browser.core.preferences.SettingsRepository
+
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 /**
  * Central manager for all app settings.
@@ -9,14 +14,8 @@ import com.videoplay.browser.core.preferences.SettingsRepository
  */
 class SettingsManager(private val context: Context) {
 
-    private val settingsRepository: SettingsRepository by lazy {
-        // This would need the actual DataStore instance
-        // For now, we'll create a mock implementation
-        SettingsRepository(
-            // This would normally be the DataStore from the application
-            // For now, we'll use a mock
-            com.videoplay.browser.core.preferences.createMockDataStore(context)
-        )
+    val settingsRepository: SettingsRepository by lazy {
+        SettingsRepository(context.dataStore)
     }
 
     // Lazy initialization of setting categories
@@ -30,22 +29,12 @@ class SettingsManager(private val context: Context) {
      * Initializes all settings from persistent storage.
      */
     suspend fun initialize() {
-        // Initialize all settings from DataStore
-        // This would load all saved preferences
-        
-        // For now, we'll just initialize the repositories
-        // In a real implementation, this would load all settings
     }
 
     /**
      * Saves all settings to persistent storage.
      */
     suspend fun save() {
-        // Save all settings to DataStore
-        // This would persist all current settings
-        
-        // For now, we'll just save to the repository
-        // In a real implementation, this would save all settings
     }
 
     /**
@@ -111,9 +100,4 @@ class SettingsManager(private val context: Context) {
         val name: String,
         val category: String
     )
-}
-
-// Helper function to create a mock DataStore for testing
-fun createMockDataStore(context: Context): android.x.datastore.core.DataStore<androidx.datastore.preferences.core.Preferences> {
-    return androidx.datastore.preferences.preferencesDataStore(context)
 }

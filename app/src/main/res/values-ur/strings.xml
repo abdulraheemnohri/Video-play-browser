@@ -68,7 +68,6 @@
 
     <!-- Video Settings -->
     <string name="autoplay">خودکار پلے</string>
-    <string name="playback_speed">پلے بیک سپیڈ</string>
     <string name="remember_playback_speed">پلے بیک سپیڈ یاد رکھیں</string>
     <string name="remember_playback_position">پلے بیک پوزیشن یاد رکھیں</string>
     <string name="enable_pip">پکچر ان پکچر چالو کریں</string>

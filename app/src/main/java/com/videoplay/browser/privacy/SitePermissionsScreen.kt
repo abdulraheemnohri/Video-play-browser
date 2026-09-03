@@ -1,6 +1,7 @@
 package com.videoplay.browser.privacy
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,8 +28,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
@@ -41,10 +45,9 @@ fun SitePermissionsScreen(
     onBack: () -> Unit
 ) {
     val sitePermissionsManager = remember { SitePermissionsManager() }
-    val searchQuery = remember { mutableStateOf("") }
-    val expandedSite = remember { mutableStateOf<String?>(null) }
+    var searchQuery by remember { mutableStateOf("") }
+    var expandedSite by remember { mutableStateOf<String?>(null) }
 
-    // Mock data for sites with custom permissions
     val sitesWithPermissions = remember {
         listOf(
             "example.com",
@@ -53,9 +56,9 @@ fun SitePermissionsScreen(
         )
     }
 
-    val filteredSites = remember(sitesWithPermissions, searchQuery.value) {
+    val filteredSites = remember(sitesWithPermissions, searchQuery) {
         sitesWithPermissions.filter {
-            it.contains(searchQuery.value, ignoreCase = true)
+            it.contains(searchQuery, ignoreCase = true)
         }
     }
 
@@ -77,10 +80,9 @@ fun SitePermissionsScreen(
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            // Search bar
             OutlinedTextField(
-                value = searchQuery.value,
-                onValueChange = { searchQuery.value = it },
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text("Search sites") },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
@@ -100,19 +102,24 @@ fun SitePermissionsScreen(
                 Text("No sites with custom permissions found.")
             } else {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.weight(1f)
                 ) {
                     items(filteredSites) { site ->
                         SitePermissionItem(
                             site = site,
+                            isExpanded = expandedSite == site,
                             permissions = sitePermissionsManager.getSitePermissions(site),
+                            permissionTypes = sitePermissionsManager.getPermissionTypesForDisplay(),
+                            permissionStates = sitePermissionsManager.getPermissionStatesForDisplay(),
                             onPermissionChange = { permissionType, state ->
                                 sitePermissionsManager.setPermission(site, permissionType, state)
                             },
                             onClearPermissions = {
                                 sitePermissionsManager.clearSitePermissions(site)
                             },
-                            onExpand = { expandedSite.value = it }
+                            onToggleExpand = {
+                                expandedSite = if (expandedSite == site) null else site
+                            }
                         )
                     }
                 }
@@ -130,13 +137,10 @@ fun SitePermissionsScreen(
             sitePermissionsManager.getPermissionTypesForDisplay().forEach { (permissionType, displayName) ->
                 val defaultState = sitePermissionsManager.getDefaultPermission(permissionType)
                 PermissionItem(
-                    permissionType = permissionType,
                     displayName = displayName,
                     currentState = defaultState,
-                    onStateChange = { state ->
-                        // In a real implementation, this would update the default permission
-                        // For now, we'll just show the current default
-                    }
+                    permissionStates = sitePermissionsManager.getPermissionStatesForDisplay(),
+                    onStateChange = { state -> }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
@@ -144,28 +148,27 @@ fun SitePermissionsScreen(
     }
 }
 
-/**
- * Composable for a site with its permissions.
- */
 @Composable
 fun SitePermissionItem(
     site: String,
+    isExpanded: Boolean,
     permissions: Map<SitePermissionsManager.PermissionType, SitePermissionsManager.PermissionState>,
+    permissionTypes: List<Pair<SitePermissionsManager.PermissionType, String>>,
+    permissionStates: List<Pair<SitePermissionsManager.PermissionState, String>>,
     onPermissionChange: (SitePermissionsManager.PermissionType, SitePermissionsManager.PermissionState) -> Unit,
     onClearPermissions: () -> Unit,
-    onExpand: (String?) -> Unit
+    onToggleExpand: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
     ) {
-        // Site header
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { onExpand(if (expandedSite.value == site) null else site) },
-            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                .clickable { onToggleExpand() },
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = site,
@@ -178,15 +181,14 @@ fun SitePermissionItem(
             )
         }
 
-        // Permissions list (shown when expanded)
-        if (expandedSite.value == site) {
+        if (isExpanded) {
             Spacer(modifier = Modifier.height(8.dp))
             permissions.forEach { (permissionType, state) ->
+                val displayName = permissionTypes.find { it.first == permissionType }?.second ?: "Unknown"
                 PermissionItem(
-                    permissionType = permissionType,
-                    displayName = sitePermissionsManager.getPermissionTypesForDisplay()
-                        .find { it.first == permissionType }?.second ?: "Unknown",
+                    displayName = displayName,
                     currentState = state,
+                    permissionStates = permissionStates,
                     onStateChange = { newState ->
                         onPermissionChange(permissionType, newState)
                     }
@@ -196,7 +198,7 @@ fun SitePermissionItem(
             
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.End
+                horizontalArrangement = Arrangement.End
             ) {
                 IconButton(onClick = onClearPermissions) {
                     Icon(Icons.Default.Delete, contentDescription = "Clear permissions")
@@ -206,23 +208,20 @@ fun SitePermissionItem(
     }
 }
 
-/**
- * Composable for a single permission item.
- */
 @Composable
 fun PermissionItem(
-    permissionType: SitePermissionsManager.PermissionType,
     displayName: String,
     currentState: SitePermissionsManager.PermissionState,
+    permissionStates: List<Pair<SitePermissionsManager.PermissionState, String>>,
     onStateChange: (SitePermissionsManager.PermissionState) -> Unit
 ) {
-    val showMenu = remember { mutableStateOf(false) }
+    var showMenu by remember { mutableStateOf(false) }
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { showMenu.value = true },
-        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+            .clickable { showMenu = true },
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = displayName,
@@ -233,20 +232,20 @@ fun PermissionItem(
             text = currentState.name,
             style = MaterialTheme.typography.bodySmall
         )
-        IconButton(onClick = { showMenu.value = true }) {
+        IconButton(onClick = { showMenu = true }) {
             Icon(Icons.Default.ArrowDropDown, contentDescription = "Change")
         }
 
         DropdownMenu(
-            expanded = showMenu.value,
-            onDismissRequest = { showMenu.value = false }
+            expanded = showMenu,
+            onDismissRequest = { showMenu = false }
         ) {
-            sitePermissionsManager.getPermissionStatesForDisplay().forEach { (state, displayState) ->
+            permissionStates.forEach { (state, displayState) ->
                 DropdownMenuItem(
                     text = { Text(displayState) },
                     onClick = {
                         onStateChange(state)
-                        showMenu.value = false
+                        showMenu = false
                     }
                 )
             }

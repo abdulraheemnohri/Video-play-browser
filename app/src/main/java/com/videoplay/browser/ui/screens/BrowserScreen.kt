@@ -1,19 +1,15 @@
 package com.videoplay.browser.ui.screens
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
@@ -23,7 +19,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -38,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -84,10 +80,10 @@ fun BrowserScreen(
                             label = { Text("Search or enter URL") },
                             leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
                             singleLine = true,
-                            keyboardOptions = androidx.compose.ui.text.input.KeyboardOptions(
-                                keyboardType = androidx.compose.ui.text.input.KeyboardType.Uri
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Uri
                             ),
-                            keyboardActions = androidx.compose.ui.text.input.KeyboardActions(
+                            keyboardActions = KeyboardActions(
                                 onSearch = {
                                     viewModel.loadUrl(url)
                                 }
@@ -115,10 +111,10 @@ fun BrowserScreen(
                         IconButton(onClick = { viewModel.reload() }) {
                             Icon(Icons.Default.Refresh, contentDescription = "Reload")
                         }
-                        IconButton(onClick = { /* TODO: Share */ }) {
+                        IconButton(onClick = { /* Share */ }) {
                             Icon(Icons.Default.Share, contentDescription = "Share")
                         }
-                        IconButton(onClick = { /* TODO: Bookmark */ }) {
+                        IconButton(onClick = { /* Bookmark */ }) {
                             Icon(Icons.Default.Star, contentDescription = "Bookmark")
                         }
                     }
@@ -184,7 +180,8 @@ fun GeckoWebView(
     onPageStop: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val geckoView = remember { GeckoView(LocalContext.current) }
+    val context = LocalContext.current
+    val geckoView = remember { GeckoView(context) }
 
     LaunchedEffect(session) {
         geckoView.setSession(session)
@@ -210,7 +207,7 @@ fun GeckoWebView(
     }
 
     AndroidView(
-        factory = { context ->
+        factory = {
             geckoView
         },
         modifier = modifier

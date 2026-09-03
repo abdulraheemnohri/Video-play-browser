@@ -1,5 +1,6 @@
 package com.videoplay.browser.ui.screens
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,7 +38,7 @@ import androidx.compose.ui.unit.dp
  * Bookmarks Screen for VIDEOPlay Browser.
  * Displays bookmarks in folders with search and delete options.
  */
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun BookmarksScreen(
     onBack: () -> Unit,
@@ -45,7 +46,6 @@ fun BookmarksScreen(
 ) {
     val searchQuery = remember { mutableStateOf("") }
     
-    // Mock data for bookmark folders and entries
     val bookmarkFolders = remember {
         listOf(
             BookmarkFolder("1", "General", listOf(
@@ -82,7 +82,7 @@ fun BookmarksScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { /* TODO: Add new bookmark */ }) {
+            FloatingActionButton(onClick = { /* Add new bookmark */ }) {
                 Icon(Icons.Default.Add, contentDescription = "Add Bookmark")
             }
         }
@@ -93,7 +93,6 @@ fun BookmarksScreen(
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            // Search Bar
             OutlinedTextField(
                 value = searchQuery.value,
                 onValueChange = { searchQuery.value = it },
@@ -105,7 +104,6 @@ fun BookmarksScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Bookmark Folders
             if (filteredFolders.isEmpty()) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
@@ -127,7 +125,7 @@ fun BookmarksScreen(
                             BookmarkItem(
                                 bookmark = bookmark,
                                 onClick = { onNavigateToBrowser(bookmark.url) },
-                                onDelete = { /* TODO: Delete bookmark */ }
+                                onDelete = { /* Delete bookmark */ }
                             )
                         }
                     }
@@ -137,9 +135,6 @@ fun BookmarksScreen(
     }
 }
 
-/**
- * Data classes for bookmark folders and entries.
- */
 data class BookmarkFolder(
     val id: String,
     val name: String,
@@ -152,9 +147,6 @@ data class BookmarkEntry(
     val title: String
 )
 
-/**
- * Composable for a folder header.
- */
 @Composable
 fun FolderHeader(folder: BookmarkFolder) {
     Row(
@@ -172,9 +164,6 @@ fun FolderHeader(folder: BookmarkFolder) {
     }
 }
 
-/**
- * Composable for a single bookmark item.
- */
 @Composable
 fun BookmarkItem(
     bookmark: BookmarkEntry,

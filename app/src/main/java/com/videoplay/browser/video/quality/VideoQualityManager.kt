@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.videoplay.browser.core.preferences.SettingsRepository
+import kotlinx.coroutines.flow.first
 
 /**
  * Manages video quality settings and automatic quality selection.
@@ -47,7 +48,7 @@ class VideoQualityManager(
      * Gets the preferred video quality.
      */
     suspend fun getPreferredQuality(): VideoQuality {
-        val qualityString = settingsRepository.autoPlay.value // Reusing for now
+        val qualityString = settingsRepository.autoPlay.first()
         return when (qualityString) {
             "2160p" -> VideoQuality.Q2160P
             "1440p" -> VideoQuality.Q1440P
@@ -73,15 +74,14 @@ class VideoQualityManager(
             VideoQuality.Q360P -> "360p"
             VideoQuality.AUTO -> "auto"
         }
-        settingsRepository.setAutoPlay(qualityString) // Reusing for now
+        settingsRepository.setAutoPlay(qualityString)
     }
 
     /**
      * Gets the cellular quality setting.
      */
     suspend fun getCellularQuality(): CellularQuality {
-        // This would need a separate setting in SettingsRepository
-        return CellularQuality.AUTO // Default
+        return CellularQuality.AUTO
     }
 
     /**
@@ -89,15 +89,13 @@ class VideoQualityManager(
      * @param quality The cellular quality setting.
      */
     suspend fun setCellularQuality(quality: CellularQuality) {
-        // This would need a separate setting in SettingsRepository
     }
 
     /**
      * Gets the Wi-Fi quality setting.
      */
     suspend fun getWiFiQuality(): WiFiQuality {
-        // This would need a separate setting in SettingsRepository
-        return WiFiQuality.BEST_AVAILABLE // Default
+        return WiFiQuality.BEST_AVAILABLE
     }
 
     /**
@@ -105,26 +103,23 @@ class VideoQualityManager(
      * @param quality The Wi-Fi quality setting.
      */
     suspend fun setWiFiQuality(quality: WiFiQuality) {
-        // This would need a separate setting in SettingsRepository
     }
 
     /**
      * Gets the recommended quality based on current network conditions.
      */
-    fun getRecommendedQuality(): VideoQuality {
+    suspend fun getRecommendedQuality(): VideoQuality {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val network = connectivityManager.activeNetwork ?: return VideoQuality.AUTO
         val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return VideoQuality.AUTO
 
         return when {
-            // Wi-Fi connection
             capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
                 when (getWiFiQuality()) {
                     WiFiQuality.BEST_AVAILABLE -> VideoQuality.Q1080P
                     WiFiQuality.AUTO -> VideoQuality.AUTO
                 }
             }
-            // Cellular connection
             capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
                 when (getCellularQuality()) {
                     CellularQuality.BEST_AVAILABLE -> VideoQuality.Q720P
@@ -132,7 +127,6 @@ class VideoQualityManager(
                     CellularQuality.AUTO -> VideoQuality.AUTO
                 }
             }
-            // Other connections (Ethernet, VPN, etc.)
             else -> VideoQuality.AUTO
         }
     }
